@@ -1,0 +1,76 @@
+@font-face {
+  font-family: "Simpsons";
+  src: local("Simpsons"), url(font/Simpsonfont-p07r.ttf) format("truetype");
+}
+
+body {
+  font-family: "Simpsons";
+  background: #92d4f7;
+  margin: 0;
+  padding: 0;
+}
+
+.inner {
+  width: 900px;
+  max-width: 100%;
+  padding: 0 64px;
+  margin: 0 auto;
+}
+
+section {
+  padding: 128px 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.images-list {
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.images-list button {
+  appearance: none;
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.images-list button:hover {
+  border: 2px solid black;
+}
+
+.preview {
+  background-image: url(images/t-shirt.jpg);
+  background-size: 100%;
+  margin: 0 auto;
+  width: 600px;
+  height: 440px;
+  padding: 142px 0 0;
+  text-align: center;
+}
+
+.preview img {
+  width: 180px;
+  margin: 0 auto;
+}
+
+.preview p {
+  width: 220px;
+  margin: 0 auto;
+}
+
+.design img {
+  margin: 0 auto;
+}
+
+.design {
+  text-align: center;
+}
