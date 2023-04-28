@@ -2,12 +2,15 @@ import "./App.css";
 import React, { useCallback, useRef, useState } from "react";
 import axios from "axios";
 import { toPng } from "html-to-image";
+import Modal from "./components/Modal";
 
 export default function App() {
   const [contentResult, setContentResult] = useState(null);
   const [noResults, setNoResults] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [text, setText] = useState(null);
+  const [step, setStep] = useState(1);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   function handleSearchSubmit(event) {
     event.preventDefault();
@@ -39,8 +42,6 @@ export default function App() {
     result.map((item) => {
       item.image = `https://frinkiac.com/img/${item.Episode}/${item.Timestamp}.jpg`;
     });
-
-    //console.log(result);
     setContentResult(result);
   }
 
@@ -56,6 +57,10 @@ export default function App() {
     </li>
   ));
 
+  function handleStep(step) {
+    setStep(step);
+  }
+
   const preview = useRef(null);
 
   const onButtonClick = useCallback(() => {
@@ -66,7 +71,7 @@ export default function App() {
     toPng(preview.current, { cacheBust: true })
       .then((dataUrl) => {
         const link = document.createElement("a");
-        link.download = "my-image-name.png";
+        link.download = "my-cool-simpsons-shirt.png";
         link.href = dataUrl;
         link.click();
       })
@@ -75,66 +80,230 @@ export default function App() {
       });
   }, [preview]);
 
+  function openModal() {
+    setModalIsOpen(true);
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+  }
+
+  const buttonText = "Open my design";
+
+  const modalContent = (
+    <>
+      <div className="design" ref={preview}>
+        <img src={selectedImage} />
+        <p>{text}</p>
+        <p>&nbsp;</p>
+      </div>
+      <button onClick={onButtonClick}>Export as png</button>
+    </>
+  );
+
   return (
     <>
+      <header>
+        <div className="inner">
+          <h1>Simpsons Shirt Designer</h1>
+          <div className="steps">
+            <ul>
+              <li>
+                {step === 1 ? (
+                  <span className="step current">
+                    1 Image
+                    {selectedImage ? (
+                      <span className="complete">&#10003;</span>
+                    ) : null}
+                  </span>
+                ) : (
+                  <button
+                    className="step clickable"
+                    onClick={() => {
+                      handleStep(1);
+                    }}
+                  >
+                    1 Image
+                    {selectedImage ? (
+                      <span className="complete">&#10003;</span>
+                    ) : null}
+                  </button>
+                )}
+              </li>
+              <li>
+                {step === 1 && selectedImage ? (
+                  <button
+                    onClick={() => {
+                      handleStep(2);
+                    }}
+                    className="step clickable"
+                  >
+                    2 Text
+                    {text ? <span className="complete">&#10003;</span> : null}
+                  </button>
+                ) : null}
+
+                {step === 1 && !selectedImage ? (
+                  <span className="step">
+                    2 Text{" "}
+                    {text ? <span className="complete">&#10003;</span> : null}
+                  </span>
+                ) : null}
+
+                {step === 2 ? (
+                  <span className="step current">
+                    2 Text{" "}
+                    {text ? <span className="complete">&#10003;</span> : null}
+                  </span>
+                ) : null}
+
+                {step === 3 ? (
+                  <button
+                    onClick={() => {
+                      handleStep(2);
+                    }}
+                    className="step clickable"
+                  >
+                    2 Text
+                    {text ? <span className="complete">&#10003;</span> : null}
+                  </button>
+                ) : null}
+              </li>
+              <li>
+                {step === 3 && selectedImage && text ? (
+                  <span className="step current">3 Export</span>
+                ) : null}
+
+                {step !== 3 && selectedImage && text ? (
+                  <button
+                    className="step clickable"
+                    onClick={() => {
+                      handleStep(3);
+                    }}
+                  >
+                    3 Export
+                  </button>
+                ) : null}
+
+                {!selectedImage || !text ? (
+                  <span className="step">3 Export</span>
+                ) : null}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
       <main>
         <div className="inner">
-          <h1>Simpsons shirt machine</h1>
-          <section>
-            <h2>Step 1: Image</h2>
-            <p>Enter a search term to find images.</p>
-            <form onSubmit={handleSearchSubmit}>
-              <label htmlFor="search">Search</label>
-              <input type="search" id="search"></input>
-              <input type="submit" value="Search It"></input>
-            </form>
-            {contentResult ? (
-              <ul className="images-list">{cardsList}</ul>
-            ) : null}
-            {noResults ? "Sorry, no results" : null}
-          </section>
-          <section>
-            <h2>Step 2: Text</h2>
-            <p>Add your own writing. </p>
-            <form onSubmit={handleTextSubmit}>
-              <label htmlFor="search">Your text</label>
-              <input type="text" id="text"></input>
-              <input type="submit" value="Add Text"></input>
-            </form>
-          </section>
-          <section>
-            <h2>Step 3: Preview your shirt</h2>
-            <p>Imagine your own head and arms poking out of this bad boy!</p>
-            <div className="preview" id="preview">
-              <div ref={preview} className="t-shirt-content">
-                <img src={selectedImage} />
-                <p>{text}</p>
-              </div>
+          <div class="columns">
+            <div>
+              {step === 1 ? (
+                <section>
+                  <h2>
+                    Step 1: <br />
+                    Enter a search term to find images
+                  </h2>
+                  <form onSubmit={handleSearchSubmit}>
+                    <label htmlFor="search">Search</label>
+                    <div className="form-row">
+                      <input type="search" id="search"></input>
+                      <input type="submit" value="Search"></input>
+                    </div>
+                  </form>
+                  {contentResult ? (
+                    <>
+                      <h3>Select an image</h3>
+                      <ul className="images-list">{cardsList}</ul>
+                    </>
+                  ) : null}
+                  {noResults ? "Sorry, no results" : null}
+                </section>
+              ) : null}
+
+              {step === 2 ? (
+                <section>
+                  <h2>
+                    Step 2:
+                    <br />
+                    Add your own text. Type anything!
+                  </h2>
+                  <form onSubmit={handleTextSubmit}>
+                    <label htmlFor="search">Your text</label>
+                    <input type="text" id="text"></input>
+                    <input type="submit" value="Add Text"></input>
+                  </form>
+                </section>
+              ) : null}
+
+              {step === 3 ? (
+                <>
+                  <section>
+                    <h2>
+                      Step 3:
+                      <br /> Download your design
+                    </h2>
+                    <Modal
+                      modalIsOpen={modalIsOpen}
+                      openModal={openModal}
+                      closeModal={closeModal}
+                      modalContent={modalContent}
+                      buttonText={buttonText}
+                    />
+                  </section>
+                </>
+              ) : null}
             </div>
-          </section>
-          <section>
-            step 4 export your design
-            <div className="design" ref={preview}>
-              <img src={selectedImage} />
-              <p>{text}</p>
-              <p>&nbsp;</p>
+
+            <div class="column-fixed">
+              <section>
+                <div className="preview-top">
+                  <h2>Shirt Preview</h2>
+                  {step === 1 && selectedImage ? (
+                    <button
+                      onClick={() => {
+                        handleStep(2);
+                      }}
+                    >
+                      Next: Add Text
+                    </button>
+                  ) : null}
+
+                  {step === 2 && text ? (
+                    <button
+                      onClick={() => {
+                        handleStep(3);
+                      }}
+                    >
+                      Next: Export
+                    </button>
+                  ) : null}
+                </div>
+
+                <div className="preview" id="preview">
+                  <div ref={preview} className="t-shirt-content">
+                    <img src={selectedImage} />
+                    <p>{text}</p>
+                  </div>
+                </div>
+              </section>
             </div>
-            <button onClick={onButtonClick}>Export file</button>
-          </section>
+          </div>
         </div>
       </main>
       <footer>
-        <p>
-          Built in React by&nbsp;
-          <a
-            href="https://www.laurasalgado.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Laura Salgado
-          </a>{" "}
-        </p>
-        <p>Data Frinkiac API</p>
+        <div className="inner">
+          <p>
+            Built in React by&nbsp;
+            <a
+              href="https://www.laurasalgado.com/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Laura Salgado
+            </a>{" "}
+          </p>
+          <p>Data Frinkiac API</p>
+        </div>
       </footer>
     </>
   );

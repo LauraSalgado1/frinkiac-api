@@ -1,24 +1,186 @@
+/* #fed428 #6aaddf #ffffff #f05d31 #d5e4a1 */
 @font-face {
   font-family: "Simpsons";
   src: local("Simpsons"), url(font/Simpsonfont-p07r.ttf) format("truetype");
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
 body {
   font-family: "Simpsons";
-  background: #92d4f7;
   margin: 0;
   padding: 0;
+  font-size: 16px;
+  font-size: 1.6rem;
+  background-color: #a4e5ff;
+}
+
+.screen-reader-text {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  word-wrap: normal !important;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 400;
+}
+
+h1 {
+  font-size: 4rem;
+}
+
+h2 {
+  font-size: 3.2rem;
+}
+
+h3 {
+  font-size: 2.4rem;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 20px 0;
+  text-align: center;
+  background: #ffffff;
+  border-bottom: 3px solid #000;
+}
+
+footer {
+  background: #ffffff;
+  padding: 8px 0;
+  border-top: 3px solid #000;
+}
+
+footer .inner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .inner {
-  width: 900px;
+  width: 1200px;
   max-width: 100%;
   padding: 0 64px;
   margin: 0 auto;
 }
 
+form {
+  margin-bottom: 64px;
+}
+
+button {
+  font-family: "Simpsons";
+  background: #fed428;
+  color: #000;
+  font-size: 2.4rem;
+  border: 3px solid #000;
+  box-shadow: none;
+  border-radius: 0;
+  appearance: none;
+  padding: 8px 32px;
+  cursor: pointer;
+}
+
+input {
+  font-family: "Simpsons";
+  height: 61px;
+  background: #fff;
+  border: 3px solid #000;
+  font-size: 2.4rem;
+}
+
+input:not([type="submit"]) {
+  padding: 10px;
+  width: 300px;
+  max-width: 100%;
+}
+
+input[type="submit"] {
+  background: #fed428;
+  cursor: pointer;
+  padding: 8px 32px;
+  position: relative;
+  right: 5px;
+}
+
+label {
+  display: block;
+  font-size: 2rem;
+}
+
+.form-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-width: 100%;
+}
+
 section {
-  padding: 128px 0;
+  padding: 64px 0;
+}
+
+.steps ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+  margin: 0;
+  gap: 8px;
+}
+
+button.step {
+  cursor: pointer;
+}
+
+.step {
+  appearance: none;
+  background: lightgrey;
+  color: grey;
+  border: 3px solid grey;
+  border-radius: 0;
+  padding: 16px 32px;
+  font-size: 2.4rem;
+  font-family: "Simpsons";
+  display: block;
+  line-height: 1;
+}
+
+.step.current {
+  color: #000;
+  background: #fed428;
+  border: 3px solid #000;
+}
+
+.step.clickable {
+  color: #000;
+  background: #6aaddf;
+  border: 3px solid #000;
+}
+
+.preview-top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 img {
@@ -26,12 +188,34 @@ img {
   display: block;
 }
 
+.columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 64px;
+  position: relative;
+}
+
+.columns > div {
+  width: 50%;
+}
+
+.column-fixed {
+  position: relative;
+}
+
+.column-fixed section {
+  position: sticky;
+  top: 203px;
+}
+
 .images-list {
   padding: 0;
   list-style: none;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+  gap: 16px;
 }
 
 .images-list button {
@@ -48,17 +232,18 @@ img {
 }
 
 .preview {
-  background-image: url(images/t-shirt.jpg);
+  padding: 8px;
+  background-image: url(images/t-shirt.png);
   background-size: 100%;
+  background-repeat: no-repeat;
   margin: 0 auto;
-  width: 600px;
-  height: 440px;
-  padding: 142px 0 0;
+  height: 390px;
+  padding: 92px 0 0;
   text-align: center;
 }
 
 .preview img {
-  width: 180px;
+  width: 128px;
   margin: 0 auto;
 }
 
@@ -73,4 +258,77 @@ img {
 
 .design {
   text-align: center;
+}
+
+.modal {
+  transition: opacity 0.2s ease;
+  min-height: 100vh;
+  overflow: auto;
+  position: fixed;
+  z-index: 200;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  color: #000;
+  padding: 32px;
+  animation-name: modalFade;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease;
+  animation-duration: 0.4s;
+  display: block;
+  cursor: pointer;
+}
+
+.modal-background {
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.modal .close {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 12px;
+  margin: 0 0 0 auto;
+  display: block;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  position: sticky;
+  top: 0;
+}
+
+.modal .close svg {
+  width: 26px;
+  height: 26px;
+  fill: #000;
+}
+.modal .close:hover,
+.modal .close:focus {
+  opacity: 0.5;
+}
+
+.modal-content {
+  max-width: 100%;
+  margin: 0 auto;
+  background: #fff;
+  cursor: auto;
+  overflow-y: auto;
+  position: relative;
+  border-radius: 16px;
+  padding-bottom: 32px;
+}
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
