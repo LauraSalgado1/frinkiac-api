@@ -21,6 +21,10 @@ body {
   background-color: #a4e5ff;
 }
 
+.font-regular {
+  font-family: "Arial", sans-serif;
+}
+
 .screen-reader-text {
   border: 0;
   clip: rect(1px, 1px, 1px, 1px);
@@ -42,22 +46,25 @@ h3 {
 
 h1 {
   font-size: 4rem;
+  margin: 0;
 }
 
 h2 {
   font-size: 3.2rem;
+  margin-top: 0;
 }
 
 h3 {
   font-size: 2.4rem;
 }
 
+main {
+  min-height: calc(100vh - 252px);
+  padding: 64px 0;
+}
+
 header {
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  padding: 20px 0;
-  text-align: center;
+  padding: 16px 0 20px;
   background: #ffffff;
   border-bottom: 3px solid #000;
 }
@@ -75,11 +82,36 @@ footer .inner {
   align-items: flex-start;
 }
 
+@media (max-width: 700px) {
+  footer .inner {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+footer a,
+footer a:hover,
+footer a:focus,
+footer a:active,
+footer a:visited {
+  color: #000;
+}
+
+footer a:hover {
+  text-decoration: none;
+}
+
 .inner {
   width: 1200px;
   max-width: 100%;
   padding: 0 64px;
   margin: 0 auto;
+}
+
+@media (max-width: 1000px) {
+  .inner {
+    padding: 0 32px;
+  }
 }
 
 form {
@@ -95,16 +127,31 @@ button {
   box-shadow: none;
   border-radius: 0;
   appearance: none;
-  padding: 8px 32px;
+  padding: 0px 32px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 61px;
+  gap: 8px;
+}
+
+button:hover {
+  background: #000;
+  color: #fff;
 }
 
 input {
-  font-family: "Simpsons";
   height: 61px;
   background: #fff;
   border: 3px solid #000;
   font-size: 2.4rem;
+}
+
+@media (max-width: 1000px) {
+  input:not([type="submit"]) {
+    border-bottom: none;
+  }
 }
 
 input:not([type="submit"]) {
@@ -113,7 +160,14 @@ input:not([type="submit"]) {
   max-width: 100%;
 }
 
+@media (max-width: 1000px) {
+  input:not([type="submit"]) {
+    width: 100%;
+  }
+}
+
 input[type="submit"] {
+  font-family: "Simpsons";
   background: #fed428;
   cursor: pointer;
   padding: 8px 32px;
@@ -121,9 +175,23 @@ input[type="submit"] {
   right: 5px;
 }
 
-label {
+@media (max-width: 1000px) {
+  input[type="submit"] {
+    position: static;
+    width: 100%;
+  }
+}
+
+input[type="submit"]:hover {
+  background: #000;
+  color: #fff;
+}
+
+label,
+.label {
   display: block;
-  font-size: 2rem;
+  font-size: 2.4rem;
+  margin-bottom: 16px;
 }
 
 .form-row {
@@ -133,18 +201,33 @@ label {
   max-width: 100%;
 }
 
+@media (max-width: 1000px) {
+  .form-row {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    max-width: 100%;
+  }
+}
+
 section {
-  padding: 64px 0;
+  padding: 0 0 32px;
 }
 
 .steps ul {
   list-style: none;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: flex-start;
   padding: 0;
-  margin: 0;
+  margin: 16px 0 0;
   gap: 8px;
+}
+
+@media (max-width: 700px) {
+  .steps ul {
+    flex-direction: column;
+  }
 }
 
 button.step {
@@ -157,30 +240,41 @@ button.step {
   color: grey;
   border: 3px solid grey;
   border-radius: 0;
-  padding: 16px 32px;
+  padding: 0px 32px;
+  height: 61px;
   font-size: 2.4rem;
   font-family: "Simpsons";
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   line-height: 1;
+  gap: 8px;
 }
 
 .step.current {
-  color: #000;
-  background: #fed428;
+  color: #fff;
+  background: #000;
   border: 3px solid #000;
 }
 
 .step.clickable {
   color: #000;
-  background: #6aaddf;
+  background: #fed428;
   border: 3px solid #000;
+}
+
+.step.clickable:hover {
+  color: #fff;
+  background: #000;
 }
 
 .preview-top {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
+  min-height: 59px;
+  margin-bottom: 32px;
 }
 
 img {
@@ -197,38 +291,60 @@ img {
   position: relative;
 }
 
+@media (max-width: 1000px) {
+  .columns {
+    gap: 32px;
+  }
+}
+
+@media (max-width: 700px) {
+  .columns {
+    flex-direction: column;
+  }
+}
+
 .columns > div {
   width: 50%;
 }
 
 .column-fixed {
-  position: relative;
+  position: sticky;
+  top: 0px;
+  padding-top: 64px;
 }
 
-.column-fixed section {
-  position: sticky;
-  top: 203px;
+@media (max-width: 700px) {
+  .column-fixed {
+    position: static;
+    padding-top: 0px;
+  }
+
+  .columns > div {
+    width: 100%;
+  }
 }
 
 .images-list {
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
 
 .images-list button {
   appearance: none;
   background: transparent;
-  border: 2px solid transparent;
+  border: 4px solid transparent;
   border-radius: 0;
   padding: 0;
   cursor: pointer;
+  border: 4px solid transparent;
+  height: inherit;
 }
 
 .images-list button:hover {
-  border: 2px solid black;
+  border: 4px solid #fff;
 }
 
 .preview {
@@ -260,75 +376,21 @@ img {
   text-align: center;
 }
 
-.modal {
-  transition: opacity 0.2s ease;
-  min-height: 100vh;
-  overflow: auto;
-  position: fixed;
-  z-index: 200;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  color: #000;
-  padding: 32px;
-  animation-name: modalFade;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease;
-  animation-duration: 0.4s;
-  display: block;
-  cursor: pointer;
+.design-text {
+  font-size: 5.6rem;
+  margin-top: 30px;
+  line-height: 1.1;
 }
 
-.modal-background {
-  background-color: rgba(0, 0, 0, 0.8);
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+.t-shirt-content p {
+  font-size: 1.1rem;
 }
 
-.modal .close {
-  appearance: none;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 12px;
-  margin: 0 0 0 auto;
-  display: block;
-  transition: opacity 0.2s ease;
-  cursor: pointer;
-  position: sticky;
-  top: 0;
+.download-button {
+  margin: 64px auto;
 }
 
-.modal .close svg {
-  width: 26px;
-  height: 26px;
-  fill: #000;
-}
-.modal .close:hover,
-.modal .close:focus {
-  opacity: 0.5;
-}
-
-.modal-content {
+.text-container {
+  width: 550px;
   max-width: 100%;
-  margin: 0 auto;
-  background: #fff;
-  cursor: auto;
-  overflow-y: auto;
-  position: relative;
-  border-radius: 16px;
-  padding-bottom: 32px;
-}
-
-@keyframes modalFade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
