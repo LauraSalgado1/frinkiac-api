@@ -9,6 +9,7 @@ export default function App() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [text, setText] = useState(null);
   const [step, setStep] = useState(1);
+  const [textColor, setTextColor] = useState(null);
 
   function handleSearchSubmit(event) {
     event.preventDefault();
@@ -32,6 +33,37 @@ export default function App() {
     event.preventDefault();
     const textTerm = event.target.elements.text.value;
     setText(textTerm);
+  }
+
+  const colors = [
+    { hex: "#000000", name: "black" },
+
+    { hex: "#ffffff", name: "white" },
+
+    { hex: "#fed428", name: "yellow" },
+
+    { hex: "#6aaddf", name: "blue" },
+
+    { hex: "#f05d31", name: "red" },
+
+    { hex: "#d5e4a1", name: "green" },
+  ];
+
+  const colorsList = colors?.map((color) => {
+    <li key={color.name}>
+      <button
+        onClick={() => {
+          handleColorChange(color.hex);
+        }}
+      >
+        {color.name}
+      </button>
+    </li>;
+  });
+
+  function handleColorChange(value) {
+    const colorTerm = value;
+    setTextColor(colorTerm);
   }
 
   function getImages(resultArray) {
@@ -82,7 +114,7 @@ export default function App() {
     <>
       <header>
         <div className="inner">
-          <h1>Simpsons Shirt Designer</h1>
+          <h1>Simpsons Shirt Designer {step}</h1>
           <div className="steps">
             <ul>
               <li>
@@ -214,7 +246,7 @@ export default function App() {
                   </span>
                 ) : null}
 
-                {step === 3 ? (
+                {step === 4 || step === 3 ? (
                   <button
                     onClick={() => {
                       handleStep(2);
@@ -243,24 +275,103 @@ export default function App() {
                   </button>
                 ) : null}
               </li>
+
               <li>
-                {step === 3 && selectedImage && text ? (
-                  <span className="step current">3. Export</span>
+                {step === 3 ? (
+                  <span className="step current">
+                    3. Style
+                    {textColor ? (
+                      <span className="complete">
+                        {" "}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M9 16.17L4.83 12l-1.42 1.41L9 19L21 7l-1.41-1.41z"
+                          />
+                        </svg>
+                      </span>
+                    ) : null}
+                  </span>
                 ) : null}
 
-                {step !== 3 && selectedImage && text ? (
+                {text && step !== 3 ? (
                   <button
-                    className="step clickable"
                     onClick={() => {
                       handleStep(3);
                     }}
+                    className="step clickable"
                   >
-                    3. Export
+                    3. Style
+                    {textColor ? (
+                      <span className="complete">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M9 16.17L4.83 12l-1.42 1.41L9 19L21 7l-1.41-1.41z"
+                          />
+                        </svg>
+                      </span>
+                    ) : null}
                   </button>
                 ) : null}
 
-                {!selectedImage || !text ? (
-                  <span className="step">3. Export</span>
+                {!text ? (
+                  <span className="step">
+                    3. Style
+                    {textColor ? (
+                      <span className="complete">
+                        {" "}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          focusable="false"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M9 16.17L4.83 12l-1.42 1.41L9 19L21 7l-1.41-1.41z"
+                          />
+                        </svg>
+                      </span>
+                    ) : null}
+                  </span>
+                ) : null}
+              </li>
+
+              <li>
+                {step === 4 && selectedImage && text ? (
+                  <span className="step current">4. Export</span>
+                ) : null}
+
+                {step !== 4 && selectedImage && text && textColor ? (
+                  <button
+                    className="step clickable"
+                    onClick={() => {
+                      handleStep(4);
+                    }}
+                  >
+                    4. Export
+                  </button>
+                ) : null}
+
+                {!selectedImage || !text || !textColor ? (
+                  <span className="step">4. Export</span>
                 ) : null}
               </li>
             </ul>
@@ -311,110 +422,150 @@ export default function App() {
                   </form>
                 </section>
               ) : null}
-            </div>
 
-            {step !== 3 ? (
-              <div class="column-fixed">
+              {step === 3 ? (
                 <section>
-                  <div className="preview-top">
-                    {step === 1 && selectedImage ? (
-                      <button
-                        onClick={() => {
-                          handleStep(2);
-                        }}
-                      >
-                        <span>
-                          Next<span className="font-regular">:</span>
-                        </span>{" "}
-                        Add Text
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="32"
-                          height="32"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                          focusable="false"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6l-6 6Z"
-                          />
-                        </svg>
-                      </button>
-                    ) : null}
+                  <h2>
+                    Step 3<span className="font-regular">:</span>
+                  </h2>
 
-                    {step === 2 && text ? (
-                      <button
-                        onClick={() => {
-                          handleStep(3);
-                        }}
-                      >
-                        <span>
-                          Next<span className="font-regular">:</span>
-                        </span>
-                        Export
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="32"
-                          height="32"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                          focusable="false"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6l-6 6Z"
-                          />
-                        </svg>
-                      </button>
-                    ) : null}
-                  </div>
+                  <p className="font-regular">Choose a text color.</p>
 
-                  <div className="preview" id="preview">
-                    <div ref={preview} className="t-shirt-content">
-                      <img src={selectedImage} />
-
-                      <p>{text}</p>
-                    </div>
-                  </div>
+                  <ul class="colors-list">{colorsList}</ul>
                 </section>
-              </div>
-            ) : null}
-          </div>
-          {step === 3 ? (
-            <>
-              <section>
-                <h2>
-                  Step 3<span className="font-regular">:</span>
-                </h2>
+              ) : null}
 
-                <div className="text-container">
+              {step === 4 ? (
+                <section>
+                  <h2>
+                    Step 4<span className="font-regular">:</span>
+                  </h2>
                   <p className="font-regular label">
-                    Your combined image file includes your custom image and text
-                    on a transparent background.
+                    The image file includes your custom image and text on a
+                    transparent background.
                   </p>
                   <p className="font-regular label">
                     Make your t-shirt dreams come true!
                   </p>
+                </section>
+              ) : null}
+            </div>
+
+            <div class="column-fixed">
+              <section className="preview-container">
+                <div className="preview-top">
+                  {step === 1 && selectedImage ? (
+                    <button
+                      onClick={() => {
+                        handleStep(2);
+                      }}
+                    >
+                      <span>
+                        Next<span className="font-regular">:</span>
+                      </span>{" "}
+                      Add Text
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6l-6 6Z"
+                        />
+                      </svg>
+                    </button>
+                  ) : null}
+
+                  {step === 2 && text ? (
+                    <button
+                      onClick={() => {
+                        handleStep(3);
+                      }}
+                    >
+                      <span>
+                        Next<span className="font-regular">:</span>
+                      </span>
+                      Style
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6l-6 6Z"
+                        />
+                      </svg>
+                    </button>
+                  ) : null}
+
+                  {step === 3 && textColor ? (
+                    <button
+                      onClick={() => {
+                        handleStep(4);
+                      }}
+                    >
+                      <span>
+                        Next<span className="font-regular">:</span>
+                      </span>
+                      Export
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="m14 18l-1.4-1.45L16.15 13H4v-2h12.15L12.6 7.45L14 6l6 6l-6 6Z"
+                        />
+                      </svg>
+                    </button>
+                  ) : null}
+
+                  {step === 4 ? (
+                    <button className="download-button" onClick={onButtonClick}>
+                      download png
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M19 9h-4V3H9v6H5l7 7l7-7zM5 18v2h14v-2H5z"
+                        />
+                      </svg>
+                    </button>
+                  ) : null}
                 </div>
 
-                <button className="download-button" onClick={onButtonClick}>
-                  download png
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    focusable="false"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M19 9h-4V3H9v6H5l7 7l7-7zM5 18v2h14v-2H5z"
-                    />
-                  </svg>
-                </button>
+                <div className="preview" id="preview">
+                  <div ref={preview} className="t-shirt-content">
+                    <img src={selectedImage} />
 
+                    <p>{text}</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+
+          {step === 4 ? (
+            <>
+              <section>
                 <div className="design" ref={preview}>
                   <img src={selectedImage} />
                   <p className="design-text">{text}</p>

@@ -59,7 +59,7 @@ h3 {
 }
 
 main {
-  min-height: calc(100vh - 252px);
+  min-height: calc(100vh - 232px);
   padding: 64px 0;
 }
 
@@ -71,7 +71,7 @@ header {
 
 footer {
   background: #ffffff;
-  padding: 8px 0;
+  padding: 0;
   border-top: 3px solid #000;
 }
 
@@ -273,8 +273,8 @@ button.step {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  min-height: 59px;
-  margin-bottom: 32px;
+  min-height: 61px;
+  margin-bottom: 57px;
 }
 
 img {
@@ -309,8 +309,7 @@ img {
 
 .column-fixed {
   position: sticky;
-  top: 0px;
-  padding-top: 64px;
+  top: 64px;
 }
 
 @media (max-width: 700px) {
@@ -364,7 +363,7 @@ img {
 }
 
 .preview p {
-  width: 220px;
+  width: 128px;
   margin: 0 auto;
 }
 
@@ -374,20 +373,25 @@ img {
 
 .design {
   text-align: center;
+  margin: 64px auto;
+  width: 640px;
+  max-width: 100%;
 }
 
 .design-text {
   font-size: 5.6rem;
-  margin-top: 30px;
+  margin: 32px auto;
   line-height: 1.1;
+}
+
+@media (max-width: 700px) {
+  .design-text {
+    font-size: 2.8rem;
+  }
 }
 
 .t-shirt-content p {
   font-size: 1.1rem;
-}
-
-.download-button {
-  margin: 64px auto;
 }
 
 .text-container {
