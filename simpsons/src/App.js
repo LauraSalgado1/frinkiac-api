@@ -4,7 +4,8 @@ import axios from "axios";
 import { toPng } from "html-to-image";
 
 export default function App() {
-  const [contentResult, setContentResult] = useState(null);
+  const [imagesResult, setImagesResult] = useState(null);
+  const [imageTerm, setImageTerm] = useState(null);
   const [noResults, setNoResults] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [text, setText] = useState(null);
@@ -14,15 +15,15 @@ export default function App() {
   function handleSearchSubmit(event) {
     event.preventDefault();
     const searchTerm = event.target.elements.search.value;
+    setImageTerm(searchTerm);
     axios
       .get(`https://frinkiac.com/api/search?q=${searchTerm}`)
       .then((response) => {
         if (response.data.length > 0) {
-          //console.log(response.data);
           getImages(response.data);
           setNoResults(false);
         } else {
-          setContentResult(null);
+          setImagesResult(null);
           setNoResults(true);
         }
       })
@@ -39,27 +40,40 @@ export default function App() {
     { hex: "#000000", name: "black" },
 
     { hex: "#ffffff", name: "white" },
-
-    { hex: "#fed428", name: "yellow" },
-
-    { hex: "#6aaddf", name: "blue" },
-
-    { hex: "#f05d31", name: "red" },
-
-    { hex: "#d5e4a1", name: "green" },
   ];
 
-  const colorsList = colors?.map((color) => {
+  const colorsList = colors?.map((color) => (
     <li key={color.name}>
       <button
+        className={color.name}
         onClick={() => {
-          handleColorChange(color.hex);
+          handleColorChange(color.name);
         }}
+        style={{ color: color.hex }}
       >
-        {color.name}
+        {color.name} text
+        {textColor === color.name ? (
+          <span className="complete">
+            {" "}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                fill="currentColor"
+                d="M9 16.17L4.83 12l-1.42 1.41L9 19L21 7l-1.41-1.41z"
+              />
+            </svg>
+          </span>
+        ) : null}
+        <span className="selected"></span>
       </button>
-    </li>;
-  });
+    </li>
+  ));
 
   function handleColorChange(value) {
     const colorTerm = value;
@@ -72,18 +86,29 @@ export default function App() {
     result.map((item) => {
       item.image = `https://frinkiac.com/img/${item.Episode}/${item.Timestamp}.jpg`;
     });
-    setContentResult(result);
+    setImagesResult(result);
   }
 
-  const cardsList = contentResult?.map((card) => (
+  const cardsList = imagesResult?.map((card) => (
     <li className="item" key={card.Id}>
-      <button
-        onClick={() => {
-          setSelectedImage(card.image);
-        }}
-      >
-        <img src={card.image} />
-      </button>
+      {selectedImage === card.image ? (
+        <button
+          className="selected"
+          onClick={() => {
+            setSelectedImage(card.image);
+          }}
+        >
+          <img src={card.image} alt={`Simpsons screencap of ${imageTerm}`} />
+        </button>
+      ) : (
+        <button
+          onClick={() => {
+            setSelectedImage(card.image);
+          }}
+        >
+          <img src={card.image} alt={`Simpsons screencap of ${imageTerm}`} />
+        </button>
+      )}
     </li>
   ));
 
@@ -110,11 +135,17 @@ export default function App() {
       });
   }, [preview]);
 
+  const refresh = () => {
+    if (window.confirm("Remove your current design and start again?")) {
+      window.location.reload(true);
+    }
+  };
+
   return (
     <>
       <header>
         <div className="inner">
-          <h1>Simpsons Shirt Designer {step}</h1>
+          <h1>Simpsons Shirt Designer</h1>
           <div className="steps">
             <ul>
               <li>
@@ -380,7 +411,7 @@ export default function App() {
       </header>
       <main>
         <div className="inner">
-          <div class="columns">
+          <div className="columns">
             <div>
               {step === 1 ? (
                 <section>
@@ -396,13 +427,17 @@ export default function App() {
                       <input type="submit" value="Search"></input>
                     </div>
                   </form>
-                  {contentResult ? (
+                  {imagesResult ? (
                     <>
                       <h3>Select an image</h3>
                       <ul className="images-list">{cardsList}</ul>
                     </>
                   ) : null}
-                  {noResults ? "Sorry, no results" : null}
+                  {noResults ? (
+                    <p className="font-regular label">
+                      Sorry, no results! Try another search term.
+                    </p>
+                  ) : null}
                 </section>
               ) : null}
 
@@ -429,9 +464,9 @@ export default function App() {
                     Step 3<span className="font-regular">:</span>
                   </h2>
 
-                  <p className="font-regular">Choose a text color.</p>
+                  <p className="font-regular label">Choose a text color.</p>
 
-                  <ul class="colors-list">{colorsList}</ul>
+                  <ul className="colors-list">{colorsList}</ul>
                 </section>
               ) : null}
 
@@ -451,7 +486,7 @@ export default function App() {
               ) : null}
             </div>
 
-            <div class="column-fixed">
+            <div className="column-fixed">
               <section className="preview-container">
                 <div className="preview-top">
                   {step === 1 && selectedImage ? (
@@ -531,44 +566,117 @@ export default function App() {
                       </svg>
                     </button>
                   ) : null}
+                </div>
 
-                  {step === 4 ? (
-                    <button className="download-button" onClick={onButtonClick}>
-                      download png
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="32"
-                        height="32"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                        focusable="false"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M19 9h-4V3H9v6H5l7 7l7-7zM5 18v2h14v-2H5z"
+                {/* {step !== 4 && textColor !== "black" ? (
+                  <div className="preview white-text" id="preview">
+                    <div ref={preview} className="t-shirt-content">
+                      {selectedImage ? (
+                        <img
+                          src={selectedImage}
+                          alt={`Simpsons screencap of ${imageTerm}`}
                         />
-                      </svg>
-                    </button>
-                  ) : null}
-                </div>
+                      ) : null}
 
-                <div className="preview" id="preview">
-                  <div ref={preview} className="t-shirt-content">
-                    <img src={selectedImage} />
-
-                    <p>{text}</p>
+                      <p>{text}</p>
+                    </div>
                   </div>
-                </div>
+                ) : null} */}
+
+                {step === 1 || step === 2 ? (
+                  <div className="preview" id="preview">
+                    <div ref={preview} className="t-shirt-content">
+                      {selectedImage ? (
+                        <img
+                          src={selectedImage}
+                          alt={`Simpsons screencap of ${imageTerm}`}
+                        />
+                      ) : null}
+
+                      <p>{text}</p>
+                    </div>
+                  </div>
+                ) : null}
+
+                {step === 3 && textColor !== "white" ? (
+                  <div className="preview" id="preview">
+                    <div ref={preview} className="t-shirt-content">
+                      {selectedImage ? (
+                        <img
+                          src={selectedImage}
+                          alt={`Simpsons screencap of ${imageTerm}`}
+                        />
+                      ) : null}
+
+                      <p>{text}</p>
+                    </div>
+                  </div>
+                ) : null}
+
+                {step === 3 && textColor === "white" ? (
+                  <div className="preview white-text" id="preview">
+                    <div ref={preview} className="t-shirt-content">
+                      {selectedImage ? (
+                        <img
+                          src={selectedImage}
+                          alt={`Simpsons screencap of ${imageTerm}`}
+                        />
+                      ) : null}
+
+                      <p>{text}</p>
+                    </div>
+                  </div>
+                ) : null}
               </section>
             </div>
           </div>
 
           {step === 4 ? (
             <>
+              <div className="buttons">
+                <button className="download-button" onClick={onButtonClick}>
+                  download png
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M19 9h-4V3H9v6H5l7 7l7-7zM5 18v2h14v-2H5z"
+                    />
+                  </svg>
+                </button>
+
+                <button onClick={refresh}>
+                  Try Again{" "}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M10.6 16q0-2.025.363-2.913T12.5 11.15q1.025-.9 1.563-1.563t.537-1.512q0-1.025-.687-1.7T12 5.7q-1.275 0-1.938.775T9.126 8.05L6.55 6.95q.525-1.6 1.925-2.775T12 3q2.625 0 4.038 1.463t1.412 3.512q0 1.25-.537 2.138t-1.688 2.012Q14 13.3 13.738 13.913T13.475 16H10.6Zm1.4 6q-.825 0-1.412-.588T10 20q0-.825.588-1.413T12 18q.825 0 1.413.588T14 20q0 .825-.588 1.413T12 22Z"
+                    />
+                  </svg>
+                </button>
+              </div>
               <section>
                 <div className="design" ref={preview}>
-                  <img src={selectedImage} />
-                  <p className="design-text">{text}</p>
+                  <img
+                    src={selectedImage}
+                    alt={`Simpsons screencap of ${imageTerm}`}
+                  />
+                  <p className="design-text" style={{ color: textColor }}>
+                    {text}
+                  </p>
                   <p>&nbsp;</p>
                 </div>
               </section>
